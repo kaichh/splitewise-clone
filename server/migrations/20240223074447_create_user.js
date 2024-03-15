@@ -7,7 +7,7 @@ exports.up = function (knex) {
     if (!exists) {
       return knex.schema.createTable("user", (table) => {
         table.increments("id").primary();
-        table.string("username").notNullable();
+        table.string("name").notNullable();
         table.string("email").notNullable();
       });
     }
