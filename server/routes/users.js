@@ -14,7 +14,6 @@ router.get("/", async (req, res) => {
 // Create user
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     if (!req.body.name || !req.body.email) {
       res.send("Name and email are required");
       return;

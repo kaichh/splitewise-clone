@@ -14,6 +14,7 @@ app.get("/ping", (req, res) => {
 
 // Routes
 app.use("/users", require("./routes/users"));
+app.use("/groups", require("./routes/groups"));
 
 // app.get("/newtable", async (req, res) => {
 //   try {
