@@ -8,13 +8,14 @@ exports.up = function (knex) {
       return knex.schema.createTable("debt", (table) => {
         table.increments("id").primary();
         table.integer("transaction_id").unsigned().notNullable();
-        table.integer("creditor").unsigned().notNullable();
         table.integer("debtor").unsigned().notNullable();
         table.decimal("amount", 14, 2).notNullable();
 
         // foreign key
-        table.foreign("transaction_id").references("transaction.id");
-        table.foreign("creditor").references("user.id");
+        table
+          .foreign("transaction_id")
+          .references("transaction.id")
+          .onDelete("CASCADE");
         table.foreign("debtor").references("user.id");
       });
     }

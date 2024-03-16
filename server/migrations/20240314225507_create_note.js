@@ -12,7 +12,10 @@ exports.up = function (knex) {
         table.timestamp("create_time").defaultTo(knex.fn.now());
 
         // foreign key
-        table.foreign("transaction_id").references("transaction.id");
+        table
+          .foreign("transaction_id")
+          .references("transaction.id")
+          .onDelete("CASCADE");
       });
     }
   });

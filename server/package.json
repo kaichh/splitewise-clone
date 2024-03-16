@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "reset-db-dev": "knex migrate:rollback && knex migrate:latest && knex seed:run --specific=devData.js",
     "seed-dev": "knex seed:run --specific=devData.js",
     "seed-demo": "knex seed:run --specific=demoData.js"
   },

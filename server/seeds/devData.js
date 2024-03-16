@@ -29,5 +29,27 @@ exports.seed = async function (knex) {
     { group_id: 2, user_id: 5 },
   ]);
 
-  // Group Balance
+  // Transaction
+  await knex("transaction").del();
+  await knex("transaction").insert([
+    { group_id: 1, payer: 1, amount: 100, description: "costco" },
+    { group_id: 1, payer: 2, amount: 200, description: "car rent" },
+  ]);
+
+  // Debt
+  await knex("debt").del();
+  await knex("debt").insert([
+    { transaction_id: 1, debtor: 2, amount: 50 },
+    { transaction_id: 1, debtor: 3, amount: 30 },
+    { transaction_id: 1, debtor: 4, amount: 20 },
+    { transaction_id: 2, debtor: 1, amount: 150 },
+    { transaction_id: 2, debtor: 3, amount: 50 },
+  ]);
+
+  // Note
+  await knex("note").del();
+  await knex("note").insert([
+    { transaction_id: 1, content: "This is a note for costco." },
+    { transaction_id: 1, content: "Follow up note for costco." },
+  ]);
 };
