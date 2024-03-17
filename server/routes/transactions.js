@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const db = require("../db");
 const lodash = require("lodash");
+const GroupBalance = require("../services/groupBalance");
+const UserBalance = require("../services/userBalance");
 
 // Get all transactions in group
 router.get("/:groupId", async (req, res) => {
@@ -113,6 +115,21 @@ router.post("/", async (req, res) => {
       });
     });
     await db.insert(debtData).into("debt");
+
+    // Update balance
+    const updateBalanceData = {
+      groupId: data.group_id,
+      payerId: data.payer,
+      debts: [],
+    };
+    lodash.forEach(debts, (debt) => {
+      updateBalanceData.debts.push({
+        debtorId: debt.debtorId,
+        amount: debt.amount,
+      });
+    });
+    await GroupBalance.updateBalance(updateBalanceData);
+    await UserBalance.updateBalance(updateBalanceData);
 
     res.send("Transaction created with success!");
   } catch (err) {

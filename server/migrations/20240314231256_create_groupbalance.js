@@ -12,7 +12,7 @@ exports.up = function (knex) {
         table.integer("debtor").unsigned().notNullable();
         table.decimal("balance", 14, 2).notNullable();
 
-        // foreign key
+        // Foreign key
         table.foreign("group_id").references("group.id");
         table.foreign("creditor").references("user.id");
         table.foreign("debtor").references("user.id");

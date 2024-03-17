@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const db = require("../db");
+const UserBalance = require("../services/userBalance");
 
 // Get all users
 router.get("/", async (req, res) => {
@@ -29,11 +30,12 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    await db.insert(data).into("user");
+    const newUser = await db.insert(data).into("user").returning("id");
+    const userId = newUser[0].id;
+    await UserBalance.addMember(userId);
     res.send("User created with success!");
   } catch (err) {
     console.log(err);
-    reject("Error creating user");
   }
 });
 

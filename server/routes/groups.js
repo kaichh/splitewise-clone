@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const db = require("../db");
 const lodash = require("lodash");
+const GroupBalance = require("../services/groupBalance");
 
 // Get all groups
 router.get("/", async (req, res) => {
@@ -23,11 +24,12 @@ router.post("/", async (req, res) => {
       name: req.body.name,
     };
 
-    await db.insert(data).into("group");
+    const group = await db.insert(data).into("group").returning("id");
+    const groupId = group[0].id;
+
     res.send("Group created with success!");
   } catch (err) {
     console.log(err);
-    reject("Error creating group");
   }
 });
 
@@ -90,7 +92,7 @@ router.post("/:id/members", async (req, res) => {
       res.send("User does not exist");
       return;
     }
-    console.log("checking if user in group");
+
     // Check if user already exists in group
     const userInGroup = await db
       .select("*")
@@ -102,10 +104,16 @@ router.post("/:id/members", async (req, res) => {
     }
 
     await db.insert(data).into("group_member");
+    // Add entries in group_balance table when a new member is added to a group
+    const result = await GroupBalance.addMember(data.group_id, data.user_id);
+    if (!result) {
+      res.send("Error adding user to group");
+      return;
+    }
     res.send("User added to group with success!");
   } catch (err) {
+    console.log("Error adding user to group");
     console.log(err);
-    reject("Error adding user to group");
   }
 });
 
