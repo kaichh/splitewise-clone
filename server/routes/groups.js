@@ -87,17 +87,17 @@ router.post("/:id/members", async (req, res) => {
       user_id: req.body.userId,
     };
     // Check if user exists
-    const user = await db.select("*").from("user").where({ id: data.user_id });
+    const user = await db("user").where({ id: data.user_id });
     if (user.length === 0) {
       res.send("User does not exist");
       return;
     }
 
     // Check if user already exists in group
-    const userInGroup = await db
-      .select("*")
-      .from("group_member")
-      .where({ group_id: data.group_id, user_id: data.user_id });
+    const userInGroup = await db("group_member").where({
+      group_id: data.group_id,
+      user_id: data.user_id,
+    });
     if (userInGroup.length > 0) {
       res.send("User already exists in group");
       return;

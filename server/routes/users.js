@@ -5,7 +5,7 @@ const UserBalance = require("../services/userBalance");
 // Get all users
 router.get("/", async (req, res) => {
   try {
-    const data = await db.select("*").from("user");
+    const data = await db("user");
     res.json({ data: data });
   } catch (err) {
     console.log(err);
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
       email: req.body.email,
     };
     // Check if user already exists
-    const user = await db.select("*").from("user").where({ email: data.email });
+    const user = await db("user").where({ email: data.email });
     if (user.length > 0) {
       res.send("User already exists");
       return;

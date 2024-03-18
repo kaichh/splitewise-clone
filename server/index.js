@@ -16,6 +16,7 @@ app.get("/ping", (req, res) => {
 app.use("/users", require("./routes/users"));
 app.use("/groups", require("./routes/groups"));
 app.use("/transactions", require("./routes/transactions"));
+app.use("/balance", require("./routes/balance"));
 
 // Start server
 app.listen(port, () => {

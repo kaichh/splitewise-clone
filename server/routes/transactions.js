@@ -75,10 +75,7 @@ router.post("/", async (req, res) => {
     };
 
     // Check if group exists
-    const group = await db
-      .select("*")
-      .from("group")
-      .where({ id: data.group_id });
+    const group = await db("group").where({ id: data.group_id });
     if (group.length === 0) {
       res.send("Group not found");
       return;
@@ -141,17 +138,32 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     // Check if transaction exists
-    const transaction = await db
-      .select("*")
-      .from("transaction")
-      .where({ id: req.params.id });
+    const transaction = await db("transaction").where({ id: req.params.id });
     if (transaction.length === 0) {
       res.send("Transaction not found");
       return;
     }
 
-    // Delete transaction
+    // Prepare data to update balance
+    const updateBalanceData = {
+      groupId: transaction[0].group_id,
+      payerId: transaction[0].payer,
+      debts: [],
+    };
+    const debts = await db("debt").where({ transaction_id: req.params.id });
+    debts.forEach((debt) => {
+      updateBalanceData.debts.push({
+        debtorId: debt.debtor,
+        amount: debt.amount * -1, // Reverse the amount
+      });
+    });
+
+    // Delete transaction, debts would be deleted by cascade
     await db("transaction").where({ id: req.params.id }).del();
+    // Update balance
+    await GroupBalance.updateBalance(updateBalanceData);
+    await UserBalance.updateBalance(updateBalanceData);
+
     res.send("Transaction deleted with success!");
   } catch (err) {
     console.log(err);

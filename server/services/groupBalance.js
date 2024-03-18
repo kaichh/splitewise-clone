@@ -42,10 +42,9 @@ const create = async (groupId) => {
 const getBalenceByMember = async (groupId, userId) => {
   try {
     const balance = await db("group_balance")
-      .select("balance")
       .where({ group_id: groupId, creditor: userId })
       .orWhere({ group_id: groupId, debtor: userId });
-    return balance[0].balance;
+    return balance;
   } catch (error) {
     console.error("Error getting group balance:", error);
   }
