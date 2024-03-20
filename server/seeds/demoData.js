@@ -5,6 +5,7 @@
 
 const UserBalance = require("../services/userBalance");
 const GroupBalance = require("../services/groupBalance");
+const Transaction = require("../services/transaction");
 const { faker } = require("@faker-js/faker");
 const lodash = require("lodash");
 faker.seed(0);
@@ -13,26 +14,54 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-// const createFakeUser = function () {
-//   const firstName = faker.person.firstName();
-//   return {
-//     name: firstName,
-//     email: `firstName{}`,
-//   };
-// };
+/*
+    data = {
+        group_id: 1,
+        payer: 1,
+        amount: 100,
+        description: "Lunch",
+        debts: [
+            { debtorId: 2, amount: 50 },
+            { debtorId: 3, amount: 50 },
+        ],
+        note: "Lunch at McDonalds, what a wonderful day!"
+    }
+    */
 
-// const createFakeGroup = () => {
-//   return {
-//     name: faker.word.noun(),
-//   };
-// };
+const createFakeTransaction = function (groupId, members) {
+  // Get a random payer and two random debtors
+  const payerIdx = getRandomInt(0, members.length);
+  let debtorIdx1, debtorIdx2;
+  while (true) {
+    debtorIdx1 = getRandomInt(0, members.length);
+    if (debtorIdx1 !== payerIdx) {
+      break;
+    }
+  }
+  while (true) {
+    debtorIdx2 = getRandomInt(0, members.length);
+    if (debtorIdx2 !== payerIdx && debtorIdx2 !== debtorIdx1) {
+      break;
+    }
+  }
 
-// const createFakeGroupMember = function (fakeUsers) {
-//   return {
-//     group_id: groupId,
-//     user_id: userId,
-//   };
-// };
+  // Randomize amount and debts
+  const debts1 = getRandomInt(10, 100);
+  const debts2 = getRandomInt(10, 100);
+  const amount = debts1 + debts2;
+
+  return {
+    group_id: groupId,
+    payer: members[payerIdx],
+    amount: amount,
+    description: faker.vehicle.vehicle(),
+    debts: [
+      { debtorId: members[debtorIdx1], amount: debts1 },
+      { debtorId: members[debtorIdx2], amount: debts2 },
+    ],
+    note: faker.lorem.sentence(),
+  };
+};
 
 exports.seed = async function (knex) {
   // Users
@@ -66,11 +95,16 @@ exports.seed = async function (knex) {
   // Group Member
   const fakeGroupMembers = [];
   for (let i = 1; i < desiredFakeGroups + 1; i++) {
-    for (let j = 1; j < 6; j++) {
-      const randomUserId = getRandomInt(1, desiredFakeUsers + 1);
+    // Generate array from 1 to desiredFakeUsers
+    const userIds = Array.from(
+      { length: desiredFakeUsers },
+      (_, index) => index + 1
+    );
+    randomMemberIds = lodash.sampleSize(userIds, 5);
+    for (const id of randomMemberIds) {
       fakeGroupMembers.push({
         group_id: i,
-        user_id: randomUserId,
+        user_id: id,
       });
     }
   }
@@ -83,20 +117,22 @@ exports.seed = async function (knex) {
     await GroupBalance.create(i);
   }
 
-  // // Transactions
-  // const fakeTransactions = [];
-  // const desiredFakeTractionsInGroup = 2;
-  // const groupMembers = lodash.groupBy(fakeGroupMembers, "group_id");
-  // for (let i = 1; i < desiredFakeGroups + 1; i++) {
-  //   for (let j = 0; j < desiredFakeTractionsInGroup; j++) {
-  //     const randomPayerIdx = getRandomInt(1, 6);
-  //     const randomAmount = getRandomInt(10, 100);
-  //     fakeTransactions.push({
-  //       group_id: i,
-  //       payer: randomPayer,
-  //       amount: randomAmount,
-  //       description: faker.lorem.sentence(),
-  //     });
-  //   }
-  // }
+  // Transactions with debts and notes
+  const fakeTransactions = [];
+  const desiredFakeTractionsInGroup = 2;
+  const groupMembers = lodash.groupBy(fakeGroupMembers, "group_id");
+  for (let groupId = 1; groupId < desiredFakeGroups + 1; groupId++) {
+    const members = lodash.map(groupMembers[groupId], "user_id");
+    for (let i = 0; i < desiredFakeTractionsInGroup; i++) {
+      fakeTransactions.push(createFakeTransaction(groupId, members));
+    }
+  }
+  await knex("transaction").del();
+  for (let i = 0; i < fakeTransactions.length; i++) {
+    const result = await Transaction.create(fakeTransactions[i]);
+    if (!result) {
+      console.log("Error creating transactions in seed");
+      break;
+    }
+  }
 };

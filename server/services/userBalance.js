@@ -75,7 +75,7 @@ const addMember = async (userId) => {
 
     console.log("User balance entries created successfully");
   } catch (error) {
-    console.error("Error creating group balance entries:", error);
+    console.error("Error creating user balance entries:", error);
   }
 };
 
@@ -93,7 +93,7 @@ const updateBalance = async (transactionData) => {
 
       if (balance.length !== 1) {
         console.log(
-          "Get balance error: balance not found or more than one found"
+          "Get user balance error: balance not found or more than one found"
         );
         return;
       }
@@ -113,7 +113,7 @@ const updateBalance = async (transactionData) => {
         .update({ balance: newBalance });
     }
   } catch (error) {
-    console.error("Error updating group balance:", error);
+    console.error("Error updating user balance:", error);
   }
 };
 

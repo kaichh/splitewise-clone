@@ -100,6 +100,7 @@ const updateBalance = async (transactionData) => {
         console.log(
           "Get balance error: balance not found or more than one found"
         );
+        console.log("balance: ", balance);
         return;
       }
 
