@@ -3,6 +3,8 @@ const db = require("../db");
 const lodash = require("lodash");
 const GroupBalance = require("../services/groupBalance");
 const UserBalance = require("../services/userBalance");
+const Transaction = require("../services/transaction");
+const Note = require("../services/note");
 
 // Get all transactions in group
 router.get("/:groupId", async (req, res) => {
@@ -44,6 +46,7 @@ router.get("/:groupId", async (req, res) => {
         totalAmount: value[0].totalAmount,
         description: value[0].description,
         debts: [],
+        notes: [],
       };
       lodash.forEach(value, (v) => {
         transaction.debts.push({
@@ -53,6 +56,12 @@ router.get("/:groupId", async (req, res) => {
       });
       result.push(transaction);
     });
+
+    // Get notes for each transaction
+    for (let i = 0; i < result.length; i++) {
+      const notes = await Note.getNotesByTransaction(result[i].transactionId);
+      result[i].notes = lodash.map(notes, "content");
+    }
 
     res.json({ data: result });
   } catch (err) {
@@ -72,6 +81,8 @@ router.post("/", async (req, res) => {
       payer: req.body.payerId,
       amount: req.body.amount,
       description: req.body.description,
+      debts: req.body.debts,
+      note: req.body.note,
     };
 
     // Check if group exists
@@ -81,54 +92,12 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    // Insert transaction
-    const insertedTransaction = await db
-      .insert(data)
-      .into("transaction")
-      .returning("id");
-    const transactionId = insertedTransaction[0].id;
-
-    // Insert debts
-    const debts = req.body.debts;
-
-    // Calculate total debt and check if it matches the total amount in transaction
-    let totalDebt = 0;
-    if (debts) {
-      debts.forEach((debt) => {
-        totalDebt += debt.amount;
-      });
+    const result = await Transaction.create(data);
+    if (result) {
+      res.send("Transaction created with success!");
+    } else {
+      res.send("Error creating transaction");
     }
-    if (totalDebt !== data.amount) {
-      res.send("Total debt does not match total amount in transaction");
-      return;
-    }
-
-    const debtData = [];
-    debts.forEach((debt) => {
-      debtData.push({
-        transaction_id: transactionId,
-        debtor: debt.debtorId,
-        amount: debt.amount,
-      });
-    });
-    await db.insert(debtData).into("debt");
-
-    // Update balance
-    const updateBalanceData = {
-      groupId: data.group_id,
-      payerId: data.payer,
-      debts: [],
-    };
-    lodash.forEach(debts, (debt) => {
-      updateBalanceData.debts.push({
-        debtorId: debt.debtorId,
-        amount: debt.amount,
-      });
-    });
-    await GroupBalance.updateBalance(updateBalanceData);
-    await UserBalance.updateBalance(updateBalanceData);
-
-    res.send("Transaction created with success!");
   } catch (err) {
     console.log(err);
   }

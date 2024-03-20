@@ -32,7 +32,7 @@ const create = async (groupId) => {
     // Insert the group balance entries into the group_balance table
     await db("group_balance").insert(groupBalanceEntries);
 
-    console.log("Group " + groupId + " balance entries created successfully");
+    // console.log("Group " + groupId + " balance entries created successfully");
   } catch (error) {
     console.error("Error creating group balance entries:", error);
   }
@@ -73,7 +73,7 @@ const addMember = async (groupId, userId) => {
       }
     }
     await db("group_balance").insert(groupBalanceEntries);
-    console.log("Group " + groupId + " balance entries added successfully");
+    // console.log("Group " + groupId + " balance entries added successfully");
     return true;
   } catch (error) {
     console.error("Error creating group balance entries:", error);

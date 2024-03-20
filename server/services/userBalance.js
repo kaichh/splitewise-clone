@@ -28,7 +28,7 @@ const create = async () => {
     // Insert the user balance entries into the user_balance table
     await db("user_balance").insert(userBalanceEntries);
 
-    console.log("User balance entries created successfully");
+    // console.log("User balance entries created successfully");
   } catch (error) {
     console.error("Error creating group balance entries:", error);
   }
