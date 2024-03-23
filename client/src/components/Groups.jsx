@@ -1,7 +1,5 @@
 // import { useState } from "react";
-import PropTypes from "prop-types";
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
+import { Accordion, Card, ListGroup } from "react-bootstrap";
 
 function Groups({ groups, handleGroupClicked }) {
   const groupNames = groups.map((group) => (
@@ -14,12 +12,15 @@ function Groups({ groups, handleGroupClicked }) {
       {group.name}
     </ListGroup.Item>
   ));
-
   return (
-    <Card>
-      <Card.Header>Groups</Card.Header>
-      <ListGroup variant="flush">{groupNames}</ListGroup>
-    </Card>
+    <Accordion>
+      <Accordion.Item>
+        <Accordion.Header>Groups</Accordion.Header>
+        <Accordion.Body>
+          <ListGroup variant="flush">{groupNames}</ListGroup>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
   );
 }
 

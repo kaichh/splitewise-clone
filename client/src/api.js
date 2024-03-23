@@ -27,4 +27,4 @@ export const getTransactionsByGroupId = async (groupId) =>
 export const getGroupBalanceByMember = async (groupId, userId) =>
   request.get(`/balance/group?groupId=${groupId}&userId=${userId}`);
 export const getUserBalance = async (userId) =>
-  request.get(`/balance/${userId}`);
+  request.get(`/balance/user/${userId}`);

@@ -1,5 +1,5 @@
-import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
+import Accordion from "react-bootstrap/Accordion";
 
 function Users({ users, handleUserClicked }) {
   const userNames = users.map((user) => (
@@ -13,10 +13,14 @@ function Users({ users, handleUserClicked }) {
     </ListGroup.Item>
   ));
   return (
-    <Card>
-      <Card.Header>Users</Card.Header>
-      <ListGroup variant="flush">{userNames}</ListGroup>
-    </Card>
+    <Accordion>
+      <Accordion.Item>
+        <Accordion.Header>Users</Accordion.Header>
+        <Accordion.Body>
+          <ListGroup variant="flush">{userNames}</ListGroup>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
   );
 }
 

@@ -21,6 +21,10 @@ function UserBoard(data) {
     fetchData();
   }, [userId]);
 
+  useEffect(() => {
+    console.log(userBalance);
+  }, [userBalance]);
+
   const balanceListItem = userBalance.map((balance) =>
     balance.role === "creditor" ? (
       <ListGroup.Item key={balance.userId}>
