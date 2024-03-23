@@ -1,15 +1,24 @@
+// import { useState } from "react";
+import PropTypes from "prop-types";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 
-function Groups() {
+function Groups({ groups, handleGroupClicked }) {
+  const groupNames = groups.map((group) => (
+    <ListGroup.Item
+      key={group.id}
+      id={group.id}
+      action
+      onClick={handleGroupClicked}
+    >
+      {group.name}
+    </ListGroup.Item>
+  ));
+
   return (
     <Card>
       <Card.Header>Groups</Card.Header>
-      <ListGroup variant="flush">
-        <ListGroup.Item>Cras justo odio</ListGroup.Item>
-        <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-        <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
-      </ListGroup>
+      <ListGroup variant="flush">{groupNames}</ListGroup>
     </Card>
   );
 }

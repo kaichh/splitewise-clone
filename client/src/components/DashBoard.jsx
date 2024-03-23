@@ -1,25 +1,54 @@
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Container, Row, Col } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { getAllGroups, getAllUsers } from "../api";
 import Groups from "./Groups";
 import Users from "./Users";
-import Balance from "./Balance";
-import MainBoard from "./MainBoard";
+import GroupBoard from "./GroupBoard";
+import UserBoard from "./UserBoard";
 
 function DashBoard() {
+  const [groups, setGroups] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [id, setId] = useState(1);
+  const [isViewingGroup, setIsViewingGroup] = useState(true);
+
+  // Fetch all groups and users
+  useEffect(() => {
+    const fetchData = async () => {
+      const groupsRes = await getAllGroups();
+      const usersRes = await getAllUsers();
+      setGroups(groupsRes.data.data);
+      setUsers(usersRes.data.data);
+    };
+    fetchData();
+  }, []);
+
+  const handleGroupClicked = (event) => {
+    const groupId = Number(event.target.id);
+    setId(groupId);
+    setIsViewingGroup(true);
+  };
+
+  const handleUserClicked = (event) => {
+    const userId = Number(event.target.id);
+    setId(userId);
+    setIsViewingGroup(false);
+  };
+
   return (
     <Container>
       <Row>
-        <Col>
-          <Groups />
+        <Col xs={3}>
+          <Groups groups={groups} handleGroupClicked={handleGroupClicked} />
           <br />
-          <Users />
-        </Col>
-        <Col xs={7}>
-          <MainBoard />
+          <Users users={users} handleUserClicked={handleUserClicked} />
         </Col>
         <Col>
-          <Balance />
+          {isViewingGroup ? (
+            <GroupBoard groupId={id} />
+          ) : (
+            <UserBoard userId={id} />
+          )}
         </Col>
       </Row>
     </Container>

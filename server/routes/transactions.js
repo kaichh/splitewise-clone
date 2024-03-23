@@ -1,6 +1,8 @@
+const lodash = require("lodash");
+const moment = require("moment");
+
 const router = require("express").Router();
 const db = require("../db");
-const lodash = require("lodash");
 const GroupBalance = require("../services/groupBalance");
 const UserBalance = require("../services/userBalance");
 const Transaction = require("../services/transaction");
@@ -25,6 +27,7 @@ router.get("/:groupId", async (req, res) => {
         "transaction.payer as payerId",
         "user.name as payerName",
         "transaction.amount as totalAmount",
+        "transaction.create_time as createTime",
         "transaction.description",
         "debt.debtor as debtorId",
         "debtor.name as debtorName",
@@ -45,6 +48,7 @@ router.get("/:groupId", async (req, res) => {
         payer: value[0].payerName,
         totalAmount: value[0].totalAmount,
         description: value[0].description,
+        createTime: moment(value[0].createTime).format("YYYY-MM-DD HH:mm:ss"),
         debts: [],
         notes: [],
       };

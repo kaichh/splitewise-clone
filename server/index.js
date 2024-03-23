@@ -1,11 +1,17 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const db = require("./db");
 const port = 8080;
+
+let corsOptions = {
+  origin: ["http://localhost:5173"],
+};
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
 
 // Test route
 app.get("/ping", (req, res) => {

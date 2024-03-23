@@ -1,15 +1,21 @@
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 
-function Users() {
+function Users({ users, handleUserClicked }) {
+  const userNames = users.map((user) => (
+    <ListGroup.Item
+      key={user.id}
+      id={user.id}
+      action
+      onClick={handleUserClicked}
+    >
+      {user.name}
+    </ListGroup.Item>
+  ));
   return (
     <Card>
       <Card.Header>Users</Card.Header>
-      <ListGroup variant="flush">
-        <ListGroup.Item>Cras justo odio</ListGroup.Item>
-        <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-        <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
-      </ListGroup>
+      <ListGroup variant="flush">{userNames}</ListGroup>
     </Card>
   );
 }

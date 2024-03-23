@@ -12,6 +12,20 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const data = await db("user").where({ id: id });
+    if (data.length === 0) {
+      res.send("User not found");
+      return;
+    }
+    res.json({ data: data[0] });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Create user
 router.post("/", async (req, res) => {
   try {

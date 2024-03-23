@@ -9,11 +9,11 @@ exports.seed = async function (knex) {
   // User
   await knex("user").del();
   await knex("user").insert([
-    { name: "kc", email: "kc@email.com" },
-    { name: "bryan", email: "bryan@email.com" },
-    { name: "jimmy", email: "jimmy@email.com" },
-    { name: "kenneth", email: "kenneth@email.com" },
-    { name: "conner", email: "conner@email.com" },
+    { name: "KC", email: "kc@email.com" },
+    { name: "Bryan", email: "bryan@email.com" },
+    { name: "Jimmy", email: "jimmy@email.com" },
+    { name: "Kenneth", email: "kenneth@email.com" },
+    { name: "Conner", email: "conner@email.com" },
   ]);
 
   // User Balance
@@ -22,7 +22,10 @@ exports.seed = async function (knex) {
 
   // Group
   await knex("group").del();
-  await knex("group").insert([{ name: "parkway" }, { name: "nola" }]);
+  await knex("group").insert([
+    { name: "Parkway Place 1411" },
+    { name: "Trip to NOLA" },
+  ]);
 
   // Group Member
   await knex("group_member").del();
@@ -45,9 +48,9 @@ exports.seed = async function (knex) {
   // Transaction
   await knex("transaction").del();
   await knex("transaction").insert([
-    { group_id: 1, payer: 1, amount: 100, description: "costco" },
+    { group_id: 1, payer: 1, amount: 100, description: "Costco" },
     { group_id: 1, payer: 2, amount: 200, description: "car rent" },
-    { group_id: 2, payer: 2, amount: 300, description: "oyster" },
+    { group_id: 2, payer: 2, amount: 300, description: "Oyster" },
   ]);
 
   // Debt

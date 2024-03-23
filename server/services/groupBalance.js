@@ -38,6 +38,16 @@ const create = async (groupId) => {
   }
 };
 
+// Get the balance of a group
+const getBalence = async (groupId) => {
+  try {
+    const balance = await db("group_balance").where({ group_id: groupId });
+    return balance;
+  } catch (error) {
+    console.error("Error getting group balance:", error);
+  }
+};
+
 // Get the balance of a member in a group
 const getBalenceByMember = async (groupId, userId) => {
   try {
@@ -127,6 +137,7 @@ const updateBalance = async (transactionData) => {
 
 module.exports = {
   create,
+  getBalence,
   getBalenceByMember,
   addMember,
   updateBalance,
