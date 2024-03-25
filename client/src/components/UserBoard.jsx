@@ -39,7 +39,9 @@ function UserBoard(data) {
 
   return (
     <Card>
-      <Card.Header>{user.name}</Card.Header>
+      <Card.Header>
+        <h3>{user.name}</h3>
+      </Card.Header>
       <ListGroup variant="flush">{balanceListItem}</ListGroup>
     </Card>
   );

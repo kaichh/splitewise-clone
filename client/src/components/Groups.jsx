@@ -1,5 +1,5 @@
-// import { useState } from "react";
-import { Accordion, Card, ListGroup } from "react-bootstrap";
+import { Accordion, Container, Row, Col, ListGroup } from "react-bootstrap";
+import AddGroup from "./AddGroup";
 
 function Groups({ groups, handleGroupClicked }) {
   const groupNames = groups.map((group) => (
@@ -12,10 +12,23 @@ function Groups({ groups, handleGroupClicked }) {
       {group.name}
     </ListGroup.Item>
   ));
+
   return (
     <Accordion>
       <Accordion.Item>
-        <Accordion.Header>Groups</Accordion.Header>
+        <Accordion.Header>
+          <Container fluid>
+            <Row>
+              <Col>
+                <h5>Groups</h5>
+              </Col>
+              <Col size="sm" style={{ textAlign: "right" }}>
+                <AddGroup />
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
+
         <Accordion.Body>
           <ListGroup variant="flush">{groupNames}</ListGroup>
         </Accordion.Body>

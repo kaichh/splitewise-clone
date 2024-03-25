@@ -12,7 +12,7 @@ const request = axios.create({
 // Users
 export const getAllUsers = async () => request.get("/users");
 export const getUserById = async (id) => request.get(`/users/${id}`);
-// export const createUser = async (data) => request.post("/users", data);
+export const createUser = async (data) => request.post("/users", data);
 
 // Groups
 export const getAllGroups = async () => request.get("/groups");

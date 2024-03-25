@@ -14,6 +14,7 @@ import {
   Col,
   OverlayTrigger,
   Popover,
+  Button,
 } from "react-bootstrap";
 
 function GroupBoard(data) {
@@ -184,18 +185,17 @@ function GroupBoard(data) {
       <Row>
         <Col xs={8}>
           <Card>
-            <Card.Header>{group.name}</Card.Header>
+            <Card.Header>
+              <h3>{group.name}</h3>
+              <Button size="sm">Add an expense</Button>
+            </Card.Header>
             <Accordion flush>{trxListItem}</Accordion>
           </Card>
         </Col>
         <Col>
           <Card>
             <Card.Header>Balance</Card.Header>
-            <ListGroup variant="flush">
-              {balanceListItem}
-              {/* <ListGroup.Item>John gets back $100</ListGroup.Item>
-              <ListGroup.Item>Tom owes $50</ListGroup.Item> */}
-            </ListGroup>
+            <ListGroup variant="flush">{balanceListItem}</ListGroup>
           </Card>
           <br />
           <Card>

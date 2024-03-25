@@ -1,5 +1,5 @@
-import ListGroup from "react-bootstrap/ListGroup";
-import Accordion from "react-bootstrap/Accordion";
+import { Container, Row, Col, ListGroup, Accordion } from "react-bootstrap";
+import AddUser from "./AddUser";
 
 function Users({ users, handleUserClicked }) {
   const userNames = users.map((user) => (
@@ -15,7 +15,18 @@ function Users({ users, handleUserClicked }) {
   return (
     <Accordion>
       <Accordion.Item>
-        <Accordion.Header>Users</Accordion.Header>
+        <Accordion.Header>
+          <Container fluid>
+            <Row>
+              <Col>
+                <h5>Users</h5>
+              </Col>
+              <Col size="sm" style={{ textAlign: "right" }}>
+                <AddUser />
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
         <Accordion.Body>
           <ListGroup variant="flush">{userNames}</ListGroup>
         </Accordion.Body>
