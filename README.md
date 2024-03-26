@@ -1,27 +1,23 @@
 # splitewise-clone
 
-# Quick Start
+### Quick Start
 
-### First run database on docker
-
-```
-$ docker compose up
-```
-
-### Start the server
+#### Backend
 
 ```
-$ npm start dev
-```
-
-### To migrate database to the latest update
-
-```
-$ knex migrate:latest
-```
-
-### To rollback all the completed migrations:
+$ cd server
+$ npm install
+$ docker compose up     #run database in docker container
+$ npm run reset-db-dev  #run seed
+$ npm run dev
 
 ```
-$ knex migrate:rollback --all
+
+#### Frontend
+
+```
+$ cd client
+$ npm install
+$ npm run dev
+
 ```
