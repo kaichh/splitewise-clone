@@ -45,7 +45,7 @@ function DashBoard() {
         </Col>
         <Col>
           {isViewingGroup ? (
-            <GroupBoard groupId={id} />
+            <GroupBoard groupId={id} users={users} />
           ) : (
             <UserBoard userId={id} />
           )}

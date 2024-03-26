@@ -75,7 +75,7 @@ const create = async (data) => {
   await GroupBalance.updateBalance(updateBalanceData);
   await UserBalance.updateBalance(updateBalanceData);
   // Insert notes
-  if (data.notes !== "") {
+  if (data.note !== "") {
     await Note.createNote({
       transactionId: transactionId,
       content: data.note,

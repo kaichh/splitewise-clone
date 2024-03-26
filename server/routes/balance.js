@@ -34,19 +34,6 @@ router.get("/group", async (req, res) => {
   }
 });
 
-// // Get group balance
-// router.get("/group/:groupId", async (req, res) => {
-//   try {
-//     const groupId = Number(req.params.groupId);
-//     const rawBalance = await GroupBalance.getBalenceByGroup(groupId);
-//     const result = await processBalanceResult(groupId, rawBalance);
-
-//     res.json({ data: result });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
-
 async function processBalanceResult(userId, rawBalance) {
   const result = [];
   for (let i = 0; i < rawBalance.length; i++) {

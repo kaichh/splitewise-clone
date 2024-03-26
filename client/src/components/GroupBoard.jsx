@@ -16,16 +16,23 @@ import {
   Popover,
   Button,
 } from "react-bootstrap";
+import AddMember from "./AddMember";
+import AddTransaction from "./AddTransaction";
 
 function GroupBoard(data) {
   const [groupId, setGroupId] = useState(data.groupId);
   const [group, setGroup] = useState({});
   const [transactions, setTransactions] = useState([]);
   const [groupBalance, setGroupBalance] = useState([]);
+  const [users, setUsers] = useState(data.users);
 
   useEffect(() => {
     setGroupId(data.groupId);
   }, [data.groupId]);
+
+  useEffect(() => {
+    setUsers(data.users);
+  }, [data.users]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,10 +67,6 @@ function GroupBoard(data) {
     };
     fetchData();
   }, [group]);
-
-  useEffect(() => {
-    console.log(groupBalance);
-  }, [groupBalance]);
 
   // Manage Transaction data
   const trxListItem = transactions.map((transaction) => {
@@ -186,20 +189,37 @@ function GroupBoard(data) {
         <Col xs={8}>
           <Card>
             <Card.Header>
-              <h3>{group.name}</h3>
-              <Button size="sm">Add an expense</Button>
+              <h2>{group.name}</h2>
+              {group.members && (
+                <AddTransaction members={group.members} groupId={groupId} />
+              )}
             </Card.Header>
             <Accordion flush>{trxListItem}</Accordion>
           </Card>
         </Col>
         <Col>
           <Card>
-            <Card.Header>Balance</Card.Header>
+            <Card.Header>
+              <h5>Balance</h5>
+            </Card.Header>
             <ListGroup variant="flush">{balanceListItem}</ListGroup>
           </Card>
           <br />
           <Card>
-            <Card.Header>Members in {group.name}</Card.Header>
+            <Card.Header>
+              <div style={{ display: "flex" }}>
+                <div>
+                  <h5>Members in {group.name}</h5>
+                </div>
+                <div>
+                  <AddMember
+                    users={users}
+                    members={group.members}
+                    groupId={groupId}
+                  />
+                </div>
+              </div>
+            </Card.Header>
             <ListGroup variant="flush">{memberListItem}</ListGroup>
           </Card>
         </Col>

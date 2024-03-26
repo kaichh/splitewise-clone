@@ -18,10 +18,14 @@ export const createUser = async (data) => request.post("/users", data);
 export const getAllGroups = async () => request.get("/groups");
 export const getGroupById = async (id) => request.get(`/groups/${id}`);
 export const createGroup = async (data) => request.post("/groups", data);
+export const addMemberToGroup = async (groupId, data) =>
+  request.post(`/groups/${groupId}/members`, data);
 
 // Transactions
 export const getTransactionsByGroupId = async (groupId) =>
   request.get(`/transactions/${groupId}`);
+export const createTransaction = async (data) =>
+  request.post("/transactions", data);
 
 // Balance
 export const getGroupBalanceByMember = async (groupId, userId) =>
