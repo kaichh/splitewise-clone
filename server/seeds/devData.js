@@ -60,7 +60,7 @@ exports.seed = async function (knex) {
     { transaction_id: 1, debtor: 3, amount: 30 },
     { transaction_id: 1, debtor: 4, amount: 20 },
     { transaction_id: 2, debtor: 1, amount: 160 },
-    { transaction_id: 2, debtor: 3, amount: 50 },
+    { transaction_id: 2, debtor: 3, amount: 40 },
     { transaction_id: 3, debtor: 1, amount: 10 },
     { transaction_id: 3, debtor: 5, amount: 290 },
   ]);

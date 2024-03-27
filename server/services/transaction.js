@@ -85,6 +85,97 @@ const create = async (data) => {
   return true;
 };
 
+const update = async (data) => {
+  /*
+  data = {
+    id: req.params.id,
+    payerId: req.body.payerId,
+    amount: req.body.amount,
+    description: req.body.description,
+    debts: req.body.debts,
+    note: req.body.note,
+  };
+  */
+
+  const response = await db("transaction").where({ id: data.id });
+  if (response.length === 0) {
+    res.send("Transaction not found");
+    return;
+  }
+  const originalTransaction = response[0];
+  const transactionId = response[0].id;
+
+  // Reverse Balance
+  // Prepare data to reverse balance
+  const reverseBalanceData = {
+    groupId: originalTransaction.group_id,
+    payerId: originalTransaction.payer,
+    debts: [],
+  };
+  const debts = await db("debt").where({ transaction_id: transactionId });
+  debts.forEach((debt) => {
+    reverseBalanceData.debts.push({
+      debtorId: debt.debtor,
+      amount: Number(debt.amount * -1), // Reverse the amount
+    });
+  });
+  await GroupBalance.updateBalance(reverseBalanceData);
+  await UserBalance.updateBalance(reverseBalanceData);
+
+  // Delete existing debts
+  await db("debt").where({ transaction_id: transactionId }).del();
+
+  // Delete existing notes
+  await db("note").where({ transaction_id: transactionId }).del();
+
+  // Prepare new transaction data
+  const newTransactionData = {
+    group_id: originalTransaction.group_id,
+    payer: data.payerId,
+    amount: data.amount,
+    description: data.description,
+  };
+
+  // Prepare new debt data
+  const newDebtData = [];
+  data.debts.forEach((debt) => {
+    newDebtData.push({
+      transaction_id: transactionId,
+      debtor: debt.debtorId,
+      amount: debt.amount,
+    });
+  });
+
+  // Prepare new balance data
+  const newBalanceData = {
+    groupId: originalTransaction.group_id,
+    payerId: data.payerId,
+    debts: [],
+  };
+  lodash.forEach(data.debts, (debt) => {
+    newBalanceData.debts.push({
+      debtorId: debt.debtorId,
+      amount: debt.amount,
+    });
+  });
+
+  await db("transaction").where({ id: data.id }).update(newTransactionData);
+  await db.insert(newDebtData).into("debt");
+  await GroupBalance.updateBalance(newBalanceData);
+  await UserBalance.updateBalance(newBalanceData);
+
+  // Insert notes
+  if (data.note !== "") {
+    await Note.createNote({
+      transactionId: transactionId,
+      content: data.note,
+    });
+  }
+
+  return true;
+};
+
 module.exports = {
   create,
+  update,
 };

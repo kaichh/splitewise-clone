@@ -26,6 +26,8 @@ export const getTransactionsByGroupId = async (groupId) =>
   request.get(`/transactions/${groupId}`);
 export const createTransaction = async (data) =>
   request.post("/transactions", data);
+export const deleteTransaction = async (id) =>
+  request.delete(`/transactions/${id}`);
 
 // Balance
 export const getGroupBalanceByMember = async (groupId, userId) =>

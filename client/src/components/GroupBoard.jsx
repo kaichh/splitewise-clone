@@ -6,15 +6,16 @@ import {
   getGroupById,
   getTransactionsByGroupId,
   getGroupBalanceByMember,
+  deleteTransaction,
 } from "../api";
 import {
   Accordion,
+  CloseButton,
   Container,
   Row,
   Col,
   OverlayTrigger,
   Popover,
-  Button,
 } from "react-bootstrap";
 import AddMember from "./AddMember";
 import AddTransaction from "./AddTransaction";
@@ -68,6 +69,15 @@ function GroupBoard(data) {
     fetchData();
   }, [group]);
 
+  const handleDeleteTrx = async (event) => {
+    const trxId = event.target.value;
+    console.log(trxId);
+    const response = await deleteTransaction(trxId);
+    console.log(response);
+    const trxRes = await getTransactionsByGroupId(groupId);
+    setTransactions(trxRes.data.data);
+  };
+
   // Manage Transaction data
   const trxListItem = transactions.map((transaction) => {
     const date = moment(transaction.createTime).format("MM/DD");
@@ -94,7 +104,21 @@ function GroupBoard(data) {
           </Container>
         </Accordion.Header>
         <Accordion.Body>
-          {payer} paid ${transaction.totalAmount} <br /> <br />
+          <Container>
+            <Row>
+              <Col xs={9}>
+                {payer} paid ${transaction.totalAmount}
+              </Col>
+              <Col>
+                <CloseButton
+                  variant={"red"}
+                  value={trxId}
+                  onClick={handleDeleteTrx}
+                />
+              </Col>
+            </Row>
+          </Container>
+          <br /> <br />
           <ListGroup variant="flush">{debtInfo}</ListGroup>
         </Accordion.Body>
       </Accordion.Item>

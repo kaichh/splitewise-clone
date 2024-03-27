@@ -107,6 +107,40 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Update transaction
+router.put("/:id", async (req, res) => {
+  try {
+    if (!req.body.payerId || !req.body.amount) {
+      res.send("payer ID, and amount are required");
+      return;
+    }
+    const data = {
+      id: req.params.id,
+      payerId: req.body.payerId,
+      amount: req.body.amount,
+      description: req.body.description,
+      debts: req.body.debts,
+      note: req.body.note,
+    };
+
+    // Check if transaction exists
+    const transaction = await db("transaction").where({ id: data.id });
+    if (transaction.length === 0) {
+      res.send("Transaction not found");
+      return;
+    }
+
+    const result = await Transaction.update(data);
+    if (result) {
+      res.send("Transaction updated with success!");
+    } else {
+      res.send("Error updating transaction");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Delete transaction
 router.delete("/:id", async (req, res) => {
   try {
@@ -124,12 +158,15 @@ router.delete("/:id", async (req, res) => {
       debts: [],
     };
     const debts = await db("debt").where({ transaction_id: req.params.id });
+
     debts.forEach((debt) => {
       updateBalanceData.debts.push({
         debtorId: debt.debtor,
-        amount: debt.amount * -1, // Reverse the amount
+        amount: Number(debt.amount * -1), // Reverse the amount
       });
     });
+
+    // console.log(updateBalanceData);
 
     // Delete transaction, debts would be deleted by cascade
     await db("transaction").where({ id: req.params.id }).del();
