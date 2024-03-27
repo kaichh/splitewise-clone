@@ -18,7 +18,7 @@ import {
   Popover,
 } from "react-bootstrap";
 import AddMember from "./AddMember";
-import AddTransaction from "./AddTransaction";
+import AddUpdateTransaction from "./AddUpdateTransaction";
 
 function GroupBoard(data) {
   const [groupId, setGroupId] = useState(data.groupId);
@@ -71,9 +71,8 @@ function GroupBoard(data) {
 
   const handleDeleteTrx = async (event) => {
     const trxId = event.target.value;
-    console.log(trxId);
     const response = await deleteTransaction(trxId);
-    console.log(response);
+    // console.log(response);
     const trxRes = await getTransactionsByGroupId(groupId);
     setTransactions(trxRes.data.data);
   };
@@ -106,15 +105,33 @@ function GroupBoard(data) {
         <Accordion.Body>
           <Container>
             <Row>
-              <Col xs={9}>
-                {payer} paid ${transaction.totalAmount}
+              <Col xs={8}>
+                <h5>
+                  {payer} paid ${transaction.totalAmount}
+                </h5>
               </Col>
               <Col>
+                <AddUpdateTransaction
+                  members={group.members}
+                  groupId={groupId}
+                  addMode={false}
+                  trxId={trxId}
+                />
                 <CloseButton
                   variant={"red"}
                   value={trxId}
                   onClick={handleDeleteTrx}
                 />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={6}>
+                {transaction.notes.map((note) => (
+                  <>
+                    <>{note}</>
+                    <br />
+                  </>
+                ))}
               </Col>
             </Row>
           </Container>
@@ -215,7 +232,11 @@ function GroupBoard(data) {
             <Card.Header>
               <h2>{group.name}</h2>
               {group.members && (
-                <AddTransaction members={group.members} groupId={groupId} />
+                <AddUpdateTransaction
+                  members={group.members}
+                  groupId={groupId}
+                  addMode={true}
+                />
               )}
             </Card.Header>
             <Accordion flush>{trxListItem}</Accordion>

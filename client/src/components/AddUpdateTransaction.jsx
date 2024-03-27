@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button, Modal, Form, FormGroup } from "react-bootstrap";
-import { createTransaction } from "../api";
+import { Button, Modal, Form } from "react-bootstrap";
+import { createTransaction, updateTransaction } from "../api";
 
-const AddTransaction = (props) => {
+const AddUpdateTransaction = (props) => {
   const [showModal, setShowModal] = useState(false);
+  const [addMode, setAddMode] = useState(true); // true: add, false: update
   const [description, setDescription] = useState();
   const [payer, setPayer] = useState();
   const [totalAmount, setTotalAmount] = useState();
@@ -11,6 +12,17 @@ const AddTransaction = (props) => {
   const [note, setNote] = useState("");
   const [members, setMembers] = useState([]);
   const [groupId, setGroupId] = useState(props.groupId);
+  const [trxId, setTrxId] = useState();
+
+  useEffect(() => {
+    setAddMode(props.addMode);
+  }, [props.addMode]);
+
+  useEffect(() => {
+    if (!addMode) {
+      setTrxId(props.trxId);
+    }
+  }, [addMode, props.trxId]);
 
   useEffect(() => {
     setMembers(props.members);
@@ -19,14 +31,6 @@ const AddTransaction = (props) => {
   useEffect(() => {
     setGroupId(props.groupId);
   }, [props.groupId]);
-
-  useEffect(() => {
-    console.log("totalAmount", totalAmount);
-  }, [totalAmount]);
-
-  useEffect(() => {
-    console.log("debtors", debtors);
-  }, [debtors]);
 
   const handleClose = () => setShowModal(false);
 
@@ -51,8 +55,15 @@ const AddTransaction = (props) => {
       note: note,
     };
     console.log(requestBody);
-    const response = await createTransaction(requestBody);
-    console.log(response);
+
+    if (addMode) {
+      const response = await createTransaction(requestBody);
+      console.log(response);
+    } else {
+      // Update transaction
+      const response = await updateTransaction(trxId, requestBody);
+      console.log(response);
+    }
 
     // Reset the form
     setDescription("");
@@ -85,10 +96,6 @@ const AddTransaction = (props) => {
         <Form.Control
           type="number"
           placeholder="Enter share"
-          //   value={
-          //     debtors.find((debtor) => debtor.userId === members[i].userId)
-          //       ?.amount || 0
-          //   }
           onChange={(e) => {
             const newShare = Number(e.target.value);
             const existingDebtor = debtors.find(
@@ -110,16 +117,31 @@ const AddTransaction = (props) => {
 
   return (
     <>
-      <Button
-        size="sm"
-        variant="outline-primary"
-        onClick={() => setShowModal(true)}
-      >
-        Add an Expense
-      </Button>
+      {addMode ? (
+        <Button
+          size="sm"
+          variant="outline-primary"
+          onClick={() => setShowModal(true)}
+        >
+          Add an Expense
+        </Button>
+      ) : (
+        <Button
+          size="sm"
+          variant="outline-secondary"
+          onClick={() => setShowModal(true)}
+        >
+          update
+        </Button>
+      )}
+
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Expense</Modal.Title>
+          {addMode ? (
+            <Modal.Title>Add Expense</Modal.Title>
+          ) : (
+            <Modal.Title>Update Expense</Modal.Title>
+          )}
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -182,4 +204,4 @@ const AddTransaction = (props) => {
   );
 };
 
-export default AddTransaction;
+export default AddUpdateTransaction;

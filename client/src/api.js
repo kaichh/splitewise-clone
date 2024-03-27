@@ -26,6 +26,8 @@ export const getTransactionsByGroupId = async (groupId) =>
   request.get(`/transactions/${groupId}`);
 export const createTransaction = async (data) =>
   request.post("/transactions", data);
+export const updateTransaction = async (id, data) =>
+  request.put(`/transactions/${id}`, data);
 export const deleteTransaction = async (id) =>
   request.delete(`/transactions/${id}`);
 
