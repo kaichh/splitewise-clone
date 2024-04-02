@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { createTransaction, updateTransaction } from "../api";
+import styled from "styled-components";
 
 const AddUpdateTransaction = (props) => {
   const [showModal, setShowModal] = useState(false);
@@ -118,13 +119,13 @@ const AddUpdateTransaction = (props) => {
   return (
     <>
       {addMode ? (
-        <Button
+        <CustomButton
           size="sm"
-          variant="outline-primary"
+          variant="primary"
           onClick={() => setShowModal(true)}
         >
           Add an Expense
-        </Button>
+        </CustomButton>
       ) : (
         <Button
           size="sm"
@@ -203,5 +204,18 @@ const AddUpdateTransaction = (props) => {
     </>
   );
 };
+
+const CustomButton = styled(Button)`
+  font-weight: bold;
+  color: white;
+  border-color: #e86437;
+  background-color: #e86437;
+
+  &:hover {
+    color: white;
+    border-color: #e24b18;
+    background-color: #e24b18;
+  }
+`;
 
 export default AddUpdateTransaction;

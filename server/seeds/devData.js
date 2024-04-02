@@ -23,7 +23,7 @@ exports.seed = async function (knex) {
   // Group
   await knex("group").del();
   await knex("group").insert([
-    { name: "Parkway Place 1411" },
+    { name: "Parkway Place Apartment" },
     { name: "Trip to NOLA" },
   ]);
 

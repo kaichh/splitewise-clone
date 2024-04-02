@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 import AddMember from "./AddMember";
 import AddUpdateTransaction from "./AddUpdateTransaction";
+import styled from "styled-components";
 
 function GroupBoard(data) {
   const [groupId, setGroupId] = useState(data.groupId);
@@ -97,7 +98,9 @@ function GroupBoard(data) {
               <Col>{date}</Col>
               <Col> {transaction.description}</Col>
               <Col>
-                {payer} paid ${transaction.totalAmount}
+                <span style={{ color: "#6fbb9e", fontWeight: "bold" }}>
+                  {payer} paid ${transaction.totalAmount}
+                </span>
               </Col>
             </Row>
           </Container>
@@ -117,6 +120,8 @@ function GroupBoard(data) {
                   addMode={false}
                   trxId={trxId}
                 />
+              </Col>
+              <Col>
                 <CloseButton
                   variant={"red"}
                   value={trxId}
@@ -229,7 +234,7 @@ function GroupBoard(data) {
       <Row>
         <Col xs={8}>
           <Card>
-            <Card.Header>
+            <Card.Header className="d-flex justify-content-between align-items-center">
               <h2>{group.name}</h2>
               {group.members && (
                 <AddUpdateTransaction
@@ -239,13 +244,13 @@ function GroupBoard(data) {
                 />
               )}
             </Card.Header>
-            <Accordion flush>{trxListItem}</Accordion>
+            <StyledAccordion flush>{trxListItem}</StyledAccordion>
           </Card>
         </Col>
         <Col>
           <Card>
             <Card.Header>
-              <h5>Balance</h5>
+              <h5>Group Balance</h5>
             </Card.Header>
             <ListGroup variant="flush">{balanceListItem}</ListGroup>
           </Card>
@@ -272,5 +277,11 @@ function GroupBoard(data) {
     </Container>
   );
 }
+
+const StyledAccordion = styled(Accordion)`
+  .accordion-button {
+    background-color: white;
+  }
+`;
 
 export default GroupBoard;
