@@ -49,7 +49,7 @@ exports.seed = async function (knex) {
   await knex("transaction").del();
   await knex("transaction").insert([
     { group_id: 1, payer: 1, amount: 100, description: "Costco" },
-    { group_id: 1, payer: 2, amount: 200, description: "car rent" },
+    { group_id: 1, payer: 2, amount: 200, description: "Car Rent" },
     { group_id: 2, payer: 2, amount: 300, description: "Oyster" },
   ]);
 
@@ -119,7 +119,7 @@ exports.seed = async function (knex) {
   // Note
   await knex("note").del();
   await knex("note").insert([
-    { transaction_id: 1, content: "This is a note for costco." },
-    { transaction_id: 1, content: "Follow up note for costco." },
+    { transaction_id: 1, content: "This is a note for costc bill." },
+    { transaction_id: 1, content: "Follow up note for costco bill." },
   ]);
 };
